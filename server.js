@@ -36,12 +36,6 @@ app.use('/products.js', express.static(path.join(ROOT, 'products.js')));
 // they will be served correctly.
 app.use(express.static(path.join(ROOT, 'dist')));
 
-// ── React Router Fallback ────────────────────────────────────────────────────
-app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
-        res.sendFile(path.join(ROOT, 'dist', 'index.html'));
-    }
-});
 
 // ── Image Upload (multer) ────────────────────────────────────────────────────
 const storage = multer.diskStorage({
