@@ -26,17 +26,17 @@ if (!fs.existsSync(IMAGES_DIR)) {
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 
-// Images, Logo saha Admin route watharai meken open karanne
+// ── Serve Specific Root Paths ────────────────────────────────────────────────
 app.use('/images', express.static(path.join(ROOT, 'images')));
-app.use('/logo.png', express.static(path.join(ROOT, 'logo.png')));
-app.use('/logo.webp', express.static(path.join(ROOT, 'logo.webp')));
 app.use('/admin', express.static(path.join(ROOT, 'admin')));
+app.use('/products.js', express.static(path.join(ROOT, 'products.js')));
 
-// Build karapu React frontend eka serve kirima
+// ── Serve React Frontend (Production) ────────────────────────────────────────
+// Serves the Vite built output. Since Vite puts public assets (logo, hero) here
+// they will be served correctly.
 app.use(express.static(path.join(ROOT, 'dist')));
 
 // ── React Router Fallback ────────────────────────────────────────────────────
-// API hari Admin hari nathnam, anith okkoma React frontend ekata yawanawa
 app.get('*', (req, res) => {
     if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
         res.sendFile(path.join(ROOT, 'dist', 'index.html'));
