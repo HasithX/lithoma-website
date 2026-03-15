@@ -26,10 +26,20 @@ if (!fs.existsSync(IMAGES_DIR)) {
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 
-// Admin panel eka wena folder ekaka thiyena nisa eka serve karanna
+// 1. Items 62 thiyena images folder eka pennanna (Meken badu tika load wei)
+app.use('/images', express.static(path.join(ROOT, 'images')));
+
+// 2. React code eke hardcode wela thiyena src images pennanna (bg eka wage)
+app.use('/src', express.static(path.join(ROOT, 'src')));
+
+// 3. Root eke thiyena logo eka pennanna (index.html link eka wenuwen)
+app.use('/logo.png', express.static(path.join(ROOT, 'logo.png')));
+app.use('/logo.webp', express.static(path.join(ROOT, 'logo.webp')));
+
+// 4. Admin panel eka pennanna
 app.use('/admin', express.static(path.join(ROOT, 'admin')));
 
-// React app eke "build" karapu aluth files tika serve karanna
+// 5. React Frontend (dist) eka pennanna
 app.use(express.static(path.join(ROOT, 'dist')));
 
 
