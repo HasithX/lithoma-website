@@ -26,22 +26,22 @@ if (!fs.existsSync(IMAGES_DIR)) {
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 
-// 1. Items 62 thiyena images folder eka pennanna (Meken badu tika load wei)
+// Images, Logo saha Admin route watharai meken open karanne
 app.use('/images', express.static(path.join(ROOT, 'images')));
-
-// 2. React code eke hardcode wela thiyena src images pennanna (bg eka wage)
-app.use('/src', express.static(path.join(ROOT, 'src')));
-
-// 3. Root eke thiyena logo eka pennanna (index.html link eka wenuwen)
 app.use('/logo.png', express.static(path.join(ROOT, 'logo.png')));
 app.use('/logo.webp', express.static(path.join(ROOT, 'logo.webp')));
-
-// 4. Admin panel eka pennanna
 app.use('/admin', express.static(path.join(ROOT, 'admin')));
 
-// 5. React Frontend (dist) eka pennanna
+// Build karapu React frontend eka serve kirima
 app.use(express.static(path.join(ROOT, 'dist')));
 
+// ── React Router Fallback ────────────────────────────────────────────────────
+// API hari Admin hari nathnam, anith okkoma React frontend ekata yawanawa
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
+        res.sendFile(path.join(ROOT, 'dist', 'index.html'));
+    }
+});
 
 // ── Image Upload (multer) ────────────────────────────────────────────────────
 const storage = multer.diskStorage({
