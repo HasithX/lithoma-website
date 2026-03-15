@@ -25,7 +25,13 @@ if (!fs.existsSync(IMAGES_DIR)) {
 
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static(ROOT));   // Serves index.html, styles.css, script.js etc.
+
+// Admin panel eka wena folder ekaka thiyena nisa eka serve karanna
+app.use('/admin', express.static(path.join(ROOT, 'admin')));
+
+// React app eke "build" karapu aluth files tika serve karanna
+app.use(express.static(path.join(ROOT, 'dist')));
+
 
 // ── Image Upload (multer) ────────────────────────────────────────────────────
 const storage = multer.diskStorage({
@@ -104,6 +110,14 @@ app.use((err, req, res, next) => {
 // ── Start ────────────────────────────────────────────────────────────────────
 // DO eken dena PORT eka ganna, nathnam default 8080 ganna (3000 wenuwata)
 const port = process.env.PORT || 8080;
+
+// ── React Router Fallback ────────────────────────────────────────────────────
+// API hari Admin hari nathnam, anith okkoma React frontend ekata yawanawa
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/admin')) {
+        res.sendFile(path.join(ROOT, 'dist', 'index.html'));
+    }
+});
 
 // '0.0.0.0' dammama thamai DO eken ena traffic eka app ekata yanne
 app.listen(port, '0.0.0.0', () => {
