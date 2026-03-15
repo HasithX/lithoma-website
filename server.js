@@ -102,8 +102,11 @@ app.use((err, req, res, next) => {
 });
 
 // ── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-    console.log(`\n✅ LithoMATE server running!`);
-    console.log(`   Shop:   http://localhost:${PORT}`);
-    console.log(`   Admin:  http://localhost:${PORT}/admin/\n`);
+// DO eken dena PORT eka ganna, nathnam default 8080 ganna (3000 wenuwata)
+const port = process.env.PORT || 8080;
+
+// '0.0.0.0' dammama thamai DO eken ena traffic eka app ekata yanne
+app.listen(port, '0.0.0.0', () => {
+    console.log(`\n✅ LithoMATE server running on port ${port}!`);
+    console.log(`   Shop and Admin are active.`);
 });
