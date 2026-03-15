@@ -88,6 +88,12 @@ export default function Shop() {
 
     return (
         <>
+            {/* ── Mobile Menu Overlay ── */}
+            <div
+                className={`mobile-menu-overlay${isMobileMenuOpen ? ' active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+            />
+
             {/* ── Header ── */}
             <header className="header">
                 <nav className="navbar">

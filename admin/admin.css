@@ -147,8 +147,41 @@ body {
 }
 
 /* ─── Responsive ─────────────────────────────────── */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .main-container {
         padding: 1rem;
+    }
+
+    /* Stack the search, filter, and add button vertically on mobile */
+    .d-flex.justify-content-between.align-items-center.mb-3 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #searchInput,
+    #categoryFilter,
+    #addBtn {
+        width: 100% !important;
+        /* Force full width on mobile */
+    }
+
+    .stat-card .stat-num {
+        font-size: 1.4rem;
+    }
+
+    .topbar .brand-icon {
+        width: 32px;
+        height: 32px;
+        font-size: .85rem;
+    }
+
+    .topbar .fs-5 {
+        font-size: 1.1rem !important;
     }
 }
