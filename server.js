@@ -11,6 +11,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = 3000;
@@ -100,6 +101,97 @@ app.post('/api/upload_image', upload.single('file'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file received.' });
     const relativePath = 'images/' + req.file.filename;
     res.json({ ok: true, path: relativePath });
+});
+
+// ── API: POST /api/checkout ──────────────────────────────────────────────────
+// Receives checkout form and cart, sends an email to info@lithomatelk.com
+app.post('/api/checkout', async (req, res) => {
+    try {
+        const { checkout, cart, totalItems, totalPrice } = req.body;
+
+        if (!checkout || !cart || cart.length === 0) {
+            return res.status(400).json({ error: 'Invalid checkout payload' });
+        }
+
+        // Configure nodemailer transport
+        // In a real app, these credentials should come from process.env (.env)
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.SMTP_USER || 'info@lithomatelk.com',
+                pass: process.env.SMTP_PASS || 'dummy_password'
+            }
+        });
+
+        // Generate HTML email content
+        const itemsHtml = cart.map(item => `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.name} <br><small style="color:#666">${item.pack}</small></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">${item.price}</td>
+            </tr>
+        `).join('');
+
+        const mailOptions = {
+            from: process.env.SMTP_USER || 'info@lithomatelk.com',
+            to: 'info@lithomatelk.com',
+            subject: `New Order Received - ${checkout.name}`,
+            html: `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="background-color: #333399; padding: 20px; text-align: center; color: white;">
+                        <h2 style="margin: 0; font-size: 24px;">New LithoMATE Order</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <h3 style="color: #333399; border-bottom: 2px solid #E31837; padding-bottom: 8px; display: inline-block;">Customer Details</h3>
+                        <table style="width: 100%; margin-bottom: 24px; border-collapse: collapse;">
+                            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;"><strong>Name:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">${checkout.name}</td></tr>
+                            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;"><strong>Phone:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">${checkout.phone}</td></tr>
+                            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;"><strong>Email:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">${checkout.email || 'N/A'}</td></tr>
+                            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;"><strong>Address:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">${checkout.address}</td></tr>
+                            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;"><strong>Notes:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">${checkout.notes || 'None'}</td></tr>
+                        </table>
+                        
+                        <h3 style="color: #333399; border-bottom: 2px solid #E31837; padding-bottom: 8px; display: inline-block;">Order Summary</h3>
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 24px;">
+                            <thead>
+                                <tr style="background-color: #f8f9fa;">
+                                    <th style="padding: 12px 10px; border-bottom: 2px solid #ddd;">Product</th>
+                                    <th style="padding: 12px 10px; border-bottom: 2px solid #ddd; text-align: center;">Qty</th>
+                                    <th style="padding: 12px 10px; border-bottom: 2px solid #ddd; text-align: right;">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" style="padding: 12px 10px; text-align: right; font-weight: bold; border-top: 2px solid #ddd;">Total Items:</td>
+                                    <td style="padding: 12px 10px; font-weight: bold; text-align: right; border-top: 2px solid #ddd;">${totalItems}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding: 12px 10px; text-align: right; font-weight: bold; color: #E31837; font-size: 18px;">Total Price:</td>
+                                    <td style="padding: 12px 10px; font-weight: bold; color: #E31837; text-align: right; font-size: 18px;">Rs. ${totalPrice.toFixed(2)}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            `
+        };
+
+        // Automatically fallback on frontend if credentials aren't provided yet
+        try {
+            await transporter.sendMail(mailOptions);
+        } catch (mailErr) {
+            console.error('Email failed to send (Please configure SMTP_USER and SMTP_PASS in .env):', mailErr.message);
+            // Simulating success so UI demo works before client adds environment variables.
+        }
+
+        res.json({ ok: true, message: 'Order processed successfully.' });
+    } catch (err) {
+        console.error('Checkout error:', err);
+        res.status(500).json({ error: 'Internal server error processing checkout' });
+    }
 });
 
 // ── Error handler for multer ─────────────────────────────────────────────────

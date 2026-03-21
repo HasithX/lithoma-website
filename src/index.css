@@ -31,9 +31,9 @@
     --nav-height: 80px;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 
     /* Transitions */
     --transition: all 0.3s ease;
@@ -182,9 +182,9 @@ img {
 
 /* --- Header & Navigation --- */
 .header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     position: fixed;
     top: 0;
     left: 0;
@@ -333,8 +333,8 @@ img {
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* Updated background with image and dark overlay */
-    background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(51, 51, 153, 0.6)), url('/hero-bg.png');
+    /* Updated background with image and rich brand gradient overlay */
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(227, 24, 55, 0.3) 50%, rgba(51, 51, 153, 0.8) 100%), url('/hero-bg.png');
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
@@ -447,19 +447,19 @@ img {
 
 .product-card {
     background: var(--color-surface);
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-    border: 1px solid var(--color-border);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+    border: 1px solid rgba(229, 231, 235, 0.6);
     display: flex;
     flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-12px) scale(1.02);
     box-shadow: var(--shadow-lg);
-    border-color: transparent;
+    border-color: rgba(51, 51, 153, 0.2);
 }
 
 .product-image-container {
@@ -935,6 +935,78 @@ img {
         opacity: 0;
         transform: translateY(-10px);
     }
+}
+
+/* --- Modal Checkout --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    padding: 24px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--color-surface);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: var(--font-family);
+    transition: var(--transition);
+    background: var(--color-bg);
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(51, 51, 153, 0.15);
+    background: var(--color-surface);
 }
 
 /* --- Animations --- */

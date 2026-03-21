@@ -1,18 +1,22 @@
 import { useState, useEffect, useCallback } from 'react'
 
-const WHATSAPP_PHONE_NUMBER = '94781270908'
+const NEW_PHONE_1 = '+94706553979'
+const NEW_PHONE_2 = '+94714278313'
 const MAP_EMBED = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31689.792584056628!2d79.85135641083987!3d6.863728899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae25a5a5c3a5fcb%3A0x3ab3ebfd292f9d8b!2sLitho%20Printers%20%26%20Litho%20Marketing%20Services!5e0!3m2!1sen!2slk!4v1773524571616!5m2!1sen!2slk'
 
 export default function Shop() {
     const [products, setProducts] = useState([])
     const [cart, setCart] = useState([])
     const [isCartOpen, setIsCartOpen] = useState(false)
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('')
     const [displayLimit, setDisplayLimit] = useState(9)
     const [toasts, setToasts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [checkoutForm, setCheckoutForm] = useState({ name: '', phone: '', address: '', email: '', notes: '' })
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
         fetch('/api/products')
@@ -68,18 +72,30 @@ export default function Shop() {
 
     const clearCart = () => setCart([])
 
-    const handleCheckout = () => {
+    const handleOrderSubmit = async (e) => {
+        e.preventDefault()
         if (cart.length === 0) { alert('Your cart is empty!'); return }
-        let text = 'Hello LithoMATE! I would like to place an order:\n\n'
-        cart.forEach((item, i) => {
-            text += `${i + 1}. *${item.name}*\n   Qty: ${item.quantity} packs (${item.pack})\n`
-        })
-        const total = cart.reduce((s, i) => {
-            const m = (i.price || '').match(/[\d,]+(\.\d+)?/)
-            return m ? s + parseFloat(m[0].replace(/,/g, '')) * i.quantity : s
-        }, 0)
-        text += `\n*Total: Rs. ${total.toFixed(2)}*\n\nPlease advise on payment & delivery. Thank you!`
-        window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(text)}`, '_blank')
+        setIsSubmitting(true)
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ checkout: checkoutForm, cart, totalItems, totalPrice })
+            })
+            const data = await response.json()
+            if (response.ok) {
+                setToasts(prev => [...prev, { id: Date.now(), msg: 'Order placed successfully! We will email you shortly.' }])
+                setCart([])
+                setIsCheckoutOpen(false)
+                setCheckoutForm({ name: '', phone: '', address: '', email: '', notes: '' })
+            } else {
+                alert('Failed to place order: ' + data.error)
+            }
+        } catch (error) {
+            alert('An error occurred. Please try again later.')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const handleSearchKey = (e) => {
@@ -149,15 +165,54 @@ export default function Shop() {
                     <div className="cart-total" style={{ color: 'var(--color-primary)', fontSize: '1.4rem' }}>
                         <span>Total Price:</span><span>Rs. {totalPrice.toFixed(2)}</span>
                     </div>
-                    <button className="btn btn-clear-cart w-full" onClick={clearCart} style={{ marginBottom: 12 }}>
+                    <button className="btn btn-clear-cart w-full" onClick={clearCart} style={{ marginBottom: 16 }}>
                         <i className="ph ph-trash" /> Clear Cart
                     </button>
-                    <button className="btn btn-whatsapp w-full" onClick={handleCheckout}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ fill: 'currentColor', width: 20, height: 20, marginRight: 8 }}>
-                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 413.3c-32.9 0-65.1-8.7-93.5-25.2l-6.7-4-69.5 18.2 18.6-67.8-4.4-7.1c-18.4-29.5-28.2-63.5-28.2-98.1 0-101.4 82.5-183.8 183.9-183.8 49.1 0 95.3 19.1 130 53.8 34.7 34.7 53.8 81 53.8 130.2 0 101.5-82.5 183.8-183.6 183.8h-.1zM324.9 295.1c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
-                        </svg>
-                        Order via WhatsApp
+                    <button className="btn btn-primary w-full" onClick={() => setIsCheckoutOpen(true)}>
+                        Proceed to Checkout
                     </button>
+                </div>
+            </div>
+
+            {/* ── Checkout Modal ── */}
+            <div className={`modal-overlay${isCheckoutOpen ? ' active' : ''}`} onClick={() => setIsCheckoutOpen(false)}>
+                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <h2 style={{ fontSize: '1.6rem', color: 'var(--color-primary)', fontWeight: 800 }}>Complete Your Order</h2>
+                        <button className="close-cart" onClick={() => setIsCheckoutOpen(false)}><i className="ph ph-x" /></button>
+                    </div>
+
+                    <form onSubmit={handleOrderSubmit}>
+                        <div className="form-group">
+                            <label>Full Name *</label>
+                            <input required className="form-input" type="text" placeholder="John Doe" value={checkoutForm.name} onChange={e => setCheckoutForm({ ...checkoutForm, name: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone Number *</label>
+                            <input required className="form-input" type="tel" placeholder="07XXXXXXXX" value={checkoutForm.phone} onChange={e => setCheckoutForm({ ...checkoutForm, phone: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                            <label>Email Address</label>
+                            <input className="form-input" type="email" placeholder="john@example.com (Optional)" value={checkoutForm.email} onChange={e => setCheckoutForm({ ...checkoutForm, email: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                            <label>Delivery Address *</label>
+                            <textarea required className="form-input" rows="3" placeholder="123 Main St, Colombo" value={checkoutForm.address} onChange={e => setCheckoutForm({ ...checkoutForm, address: e.target.value })}></textarea>
+                        </div>
+                        <div className="form-group">
+                            <label>Special Notes</label>
+                            <textarea className="form-input" rows="2" placeholder="Any special instructions for delivery..." value={checkoutForm.notes} onChange={e => setCheckoutForm({ ...checkoutForm, notes: e.target.value })}></textarea>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', fontSize: '1.2rem', fontWeight: 700 }}>
+                            <span>Total to Pay:</span>
+                            <span style={{ color: 'var(--color-primary)' }}>Rs. {totalPrice.toFixed(2)}</span>
+                        </div>
+
+                        <button disabled={isSubmitting} type="submit" className="btn btn-primary w-full" style={{ opacity: isSubmitting ? 0.7 : 1, fontSize: '1.1rem', padding: '16px' }}>
+                            {isSubmitting ? 'Processing Order...' : 'Confirm Order'}
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -258,11 +313,14 @@ export default function Shop() {
                         <img src="/logo.webp" alt="LithoMATE" style={{ height: 48, marginBottom: 16 }} />
                         <p className="footer-tagline">Quality stationery for a brighter tomorrow.</p>
                         <div className="footer-social">
-                            <a href="https://wa.me/94756833333" target="_blank" rel="noreferrer" className="social-btn whatsapp" title="WhatsApp">
+                            <a href={`https://wa.me/${NEW_PHONE_1.replace('+', '')}`} target="_blank" rel="noreferrer" className="social-btn whatsapp" title="WhatsApp Us">
                                 <i className="ph ph-whatsapp-logo" />
                             </a>
                             <a href="mailto:info@lithomatelk.com" className="social-btn email" title="Email Us">
                                 <i className="ph ph-envelope-simple" />
+                            </a>
+                            <a href="https://www.facebook.com/share/18TYq1mz68/" target="_blank" rel="noreferrer" className="social-btn facebook" title="Facebook" style={{ background: '#1877F2', color: 'white' }}>
+                                <i className="ph ph-facebook-logo" />
                             </a>
                         </div>
                     </div>
@@ -276,7 +334,10 @@ export default function Shop() {
                             </li>
                             <li>
                                 <i className="ph ph-phone footer-contact-icon" />
-                                <a href="tel:+94756833333">+94 75 683 3333</a>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <a href={`tel:${NEW_PHONE_1}`}>+94 70 655 3979</a>
+                                    <a href={`tel:${NEW_PHONE_2}`}>+94 71 427 8313</a>
+                                </div>
                             </li>
                             <li>
                                 <i className="ph ph-envelope-simple footer-contact-icon" />
