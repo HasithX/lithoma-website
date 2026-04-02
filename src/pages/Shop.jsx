@@ -8,15 +8,12 @@ export default function Shop() {
     const [products, setProducts] = useState([])
     const [cart, setCart] = useState([])
     const [isCartOpen, setIsCartOpen] = useState(false)
-    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('')
     const [displayLimit, setDisplayLimit] = useState(9)
     const [toasts, setToasts] = useState([])
     const [loading, setLoading] = useState(true)
-    const [checkoutForm, setCheckoutForm] = useState({ name: '', phone: '', address: '', email: '', notes: '' })
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
         fetch('/api/products')
@@ -72,30 +69,19 @@ export default function Shop() {
 
     const clearCart = () => setCart([])
 
-    const handleOrderSubmit = async (e) => {
-        e.preventDefault()
+    const handleRequestQuotation = () => {
         if (cart.length === 0) { alert('Your cart is empty!'); return }
-        setIsSubmitting(true)
-        try {
-            const response = await fetch('/api/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ checkout: checkoutForm, cart, totalItems, totalPrice })
-            })
-            const data = await response.json()
-            if (response.ok) {
-                setToasts(prev => [...prev, { id: Date.now(), msg: 'Order placed successfully! We will email you shortly.' }])
-                setCart([])
-                setIsCheckoutOpen(false)
-                setCheckoutForm({ name: '', phone: '', address: '', email: '', notes: '' })
-            } else {
-                alert('Failed to place order: ' + data.error)
-            }
-        } catch (error) {
-            alert('An error occurred. Please try again later.')
-        } finally {
-            setIsSubmitting(false)
-        }
+
+        let text = 'Hello Litho Marketing Services!\n\nI would like to request details/quotation for the following items:\n\n'
+        cart.forEach((item, i) => {
+            text += `${i + 1}. ${item.name} - Qty: ${item.quantity} (${item.pack})\n`
+        })
+        text += `\nEstimated Total Price: Rs. ${totalPrice.toFixed(2)}\n\nPlease let me know the final quotation and next steps. Thank you!`
+
+        const mailtoURL = `mailto:info@lithomatelk.com?subject=${encodeURIComponent("Request Details / Quotation - LithoMATE")}&body=${encodeURIComponent(text)}`
+        window.location.href = mailtoURL;
+
+        setToasts(prev => [...prev, { id: Date.now(), msg: 'Opening your email client...' }])
     }
 
     const handleSearchKey = (e) => {
@@ -168,51 +154,9 @@ export default function Shop() {
                     <button className="btn btn-clear-cart w-full" onClick={clearCart} style={{ marginBottom: 16 }}>
                         <i className="ph ph-trash" /> Clear Cart
                     </button>
-                    <button className="btn btn-primary w-full" onClick={() => setIsCheckoutOpen(true)}>
-                        Proceed to Checkout
+                    <button className="btn btn-primary w-full" onClick={handleRequestQuotation}>
+                        Request Details / Quotation
                     </button>
-                </div>
-            </div>
-
-            {/* ── Checkout Modal ── */}
-            <div className={`modal-overlay${isCheckoutOpen ? ' active' : ''}`} onClick={() => setIsCheckoutOpen(false)}>
-                <div className="modal-content" onClick={e => e.stopPropagation()}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                        <h2 style={{ fontSize: '1.6rem', color: 'var(--color-primary)', fontWeight: 800 }}>Complete Your Order</h2>
-                        <button className="close-cart" onClick={() => setIsCheckoutOpen(false)}><i className="ph ph-x" /></button>
-                    </div>
-
-                    <form onSubmit={handleOrderSubmit}>
-                        <div className="form-group">
-                            <label>Full Name *</label>
-                            <input required className="form-input" type="text" placeholder="John Doe" value={checkoutForm.name} onChange={e => setCheckoutForm({ ...checkoutForm, name: e.target.value })} />
-                        </div>
-                        <div className="form-group">
-                            <label>Phone Number *</label>
-                            <input required className="form-input" type="tel" placeholder="07XXXXXXXX" value={checkoutForm.phone} onChange={e => setCheckoutForm({ ...checkoutForm, phone: e.target.value })} />
-                        </div>
-                        <div className="form-group">
-                            <label>Email Address</label>
-                            <input className="form-input" type="email" placeholder="john@example.com (Optional)" value={checkoutForm.email} onChange={e => setCheckoutForm({ ...checkoutForm, email: e.target.value })} />
-                        </div>
-                        <div className="form-group">
-                            <label>Delivery Address *</label>
-                            <textarea required className="form-input" rows="3" placeholder="123 Main St, Colombo" value={checkoutForm.address} onChange={e => setCheckoutForm({ ...checkoutForm, address: e.target.value })}></textarea>
-                        </div>
-                        <div className="form-group">
-                            <label>Special Notes</label>
-                            <textarea className="form-input" rows="2" placeholder="Any special instructions for delivery..." value={checkoutForm.notes} onChange={e => setCheckoutForm({ ...checkoutForm, notes: e.target.value })}></textarea>
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', fontSize: '1.2rem', fontWeight: 700 }}>
-                            <span>Total to Pay:</span>
-                            <span style={{ color: 'var(--color-primary)' }}>Rs. {totalPrice.toFixed(2)}</span>
-                        </div>
-
-                        <button disabled={isSubmitting} type="submit" className="btn btn-primary w-full" style={{ opacity: isSubmitting ? 0.7 : 1, fontSize: '1.1rem', padding: '16px' }}>
-                            {isSubmitting ? 'Processing Order...' : 'Confirm Order'}
-                        </button>
-                    </form>
                 </div>
             </div>
 
@@ -220,8 +164,8 @@ export default function Shop() {
                 {/* ── Hero ── */}
                 <section id="home" className="hero section">
                     <div className="hero-content">
-                        <h1 className="hero-title">Welcome to <span className="brand-highlight2">Litho</span><span className="brand-highlight">MATE</span></h1>
-                        <p className="hero-subtitle">Sri Lanka's premium stationery for your education.</p>
+                        <img src="/2logo.webp" alt="Litho Marketing Services" className="hero-logo-img" />
+                        <p className="hero-subtitle">Premium stationery by <strong>Litho Marketing Services</strong>.</p>
                         <a href="#products" className="btn btn-primary">Shop Now</a>
                     </div>
                 </section>
@@ -310,12 +254,10 @@ export default function Shop() {
             <footer id="contact" className="footer">
                 <div className="container footer-top">
                     <div className="footer-brand-block">
-                        <img src="/logo.webp" alt="LithoMATE" style={{ height: 48, marginBottom: 16 }} />
+                        <img src="/logo.webp" alt="Litho Marketing Services" style={{ height: 48, marginBottom: 12 }} />
+                        <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary)', marginBottom: 8, fontWeight: 700 }}>Litho Marketing Services</h3>
                         <p className="footer-tagline">Quality stationery for a brighter tomorrow.</p>
                         <div className="footer-social">
-                            <a href={`https://wa.me/${NEW_PHONE_1.replace('+', '')}`} target="_blank" rel="noreferrer" className="social-btn whatsapp" title="WhatsApp Us">
-                                <i className="ph ph-whatsapp-logo" />
-                            </a>
                             <a href="mailto:info@lithomatelk.com" className="social-btn email" title="Email Us">
                                 <i className="ph ph-envelope-simple" />
                             </a>
