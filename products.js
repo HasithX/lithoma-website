@@ -1,68 +1,70 @@
 // --- LithoMATE Product Database ---
 // Edit via the Admin Panel at /admin/
 
-// Array of product objects. Updated prices and pack quantities based on the latest list.
+// 'price' field now reflects the Total Package Price (Unit Price * Quantity).
+// Prices missing in the original document default to "Rs. 0.00".
+
 const products = [
-    { id: 1, name: "A7 Red Cover Note Book 80 Pages", pack: "24 pcs in a pack", price: "Rs. 24.00", category: "Notebooks", imageUrl: "images/1773521588860-297938.jpg" }, // [cite: 7]
-    { id: 2, name: "A5 Red Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 147.00", category: "Notebooks", imageUrl: "images/1773469259610-524491.jpg" }, // [cite: 7]
-    { id: 3, name: "A6 Red Cover Note Book 80 Pages", pack: "24 pcs in a pack", price: "Rs. 53.00", category: "Notebooks", imageUrl: "images/1773521294860-79618.jpg" }, // [cite: 7]
-    { id: 4, name: "A5 Report Pad Red Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 147.00", category: "Notebooks", imageUrl: "images/1773521536874-116238.jpg" }, // [cite: 7]
-    { id: 5, name: "A6 Red Cover Note Book 120 Pages", pack: "24 pcs in a pack", price: "Rs. 78.00", category: "Notebooks", imageUrl: "images/1773521713650-739245.jpg" }, // [cite: 7]
-    { id: 6, name: "A5 Side spiral Note Book 120 Pages", pack: "12 pcs in a pack", price: "Rs. 240.00", category: "Notebooks", imageUrl: "images/1773470768997-862968.jpg" }, // [cite: 7]
-    { id: 7, name: "A6 Red Cover Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 132.00", category: "Notebooks", imageUrl: "images/1773471113599-237719.jpg" }, // [cite: 7]
-    { id: 8, name: "A5 Spiral Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 288.00", category: "Notebooks", imageUrl: "images/1773471226752-628921.jpg" }, // [cite: 7]
-    { id: 9, name: "A6 Red Cover Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 156.00", category: "Notebooks", imageUrl: "images/1773471574799-935801.jpg" }, // [cite: 7]
-    { id: 10, name: "A5 Spiral Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 336.00", category: "Notebooks", imageUrl: "images/1773471470406-688740.jpg" }, // [cite: 7]
-    { id: 11, name: "A5 Blue Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 147.00", category: "Notebooks", imageUrl: "images/1773471646873-628774.jpg" }, // [cite: 7]
-    { id: 12, name: "A7 Top Spiral Note Book 100 Pages", pack: "24 pcs in a pack", price: "Rs. 54.00", category: "Notebooks", imageUrl: "images/1773471947433-520303.jpg" }, // [cite: 7]
-    { id: 13, name: "A5 Report Pad Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 147.00", category: "Notebooks", imageUrl: "images/1773470981971-70398.jpg" }, // [cite: 7]
-    { id: 14, name: "A6 Top Spiral Note Book 100 Pages", pack: "24 pcs in a pack", price: "Rs. 102.00", category: "Notebooks", imageUrl: "images/1773471982910-135306.jpg" }, // [cite: 7]
-    { id: 15, name: "A4 Top Spiral Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 324.00", category: "Pads", imageUrl: "images/1773472270913-45927.jpg" }, // [cite: 7]
-    { id: 16, name: "Short Hand Note Book 120 Pages", pack: "12 pcs in a pack", price: "Rs. 144.00", category: "Pads", imageUrl: "images/1773472046195-862543.jpg" }, // [cite: 7]
-    { id: 17, name: "A4 Side Spiral Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 336.00", category: "Pads", imageUrl: "images/1773472477720-601142.jpg" }, // [cite: 7]
-    { id: 18, name: "Filed Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 108.00", category: "Pads", imageUrl: "images/1773472440301-99013.jpg" }, // [cite: 7]
-    { id: 19, name: "A4 Writing Pad Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 276.00", category: "Pads", imageUrl: "images/1773472763992-342904.jpg" }, // [cite: 7]
-    { id: 20, name: "Filed Note Book P.V.C Small", pack: "12 pcs in a pack", price: "Rs. 108.00", category: "Pads", imageUrl: "images/1773472790771-776283.jpg" }, // [cite: 7]
-    { id: 21, name: "A4 Campus Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 276.00", category: "Pads", imageUrl: "images/1773472964693-524013.jpg" }, // [cite: 7]
-    { id: 22, name: "Filed Note Book P.V.C Medium", pack: "06 pcs in a pack", price: "Rs. 228.00", category: "Pads", imageUrl: "images/1773472930441-91837.jpg" }, // [cite: 7]
-    { id: 23, name: "Short Hand Econmic Note Book 80 Pages", pack: "12 pcs in a pack", price: "Rs. 90.00", category: "Pads", imageUrl: "images/1773479968130-487404.jpg" }, // [cite: 7]
-    { id: 24, name: "Filed Note Book P.V.C Large", pack: "12 pcs in a pack", price: "Rs. 336.00", category: "Pads", imageUrl: "images/1773473197847-155423.jpg" }, // [cite: 7]
-    { id: 25, name: "Short Hand Econmic Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Pads", imageUrl: "images/1773480453250-329931.jpg" }, // [cite: 7]
-    { id: 26, name: "A6 Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 228.00", category: "Office", imageUrl: "images/1773479927149-260956.jpg" }, // [cite: 7]
-    { id: 27, name: "Short Hand Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 120.00", category: "Pads", imageUrl: "images/1773480194794-40248.jpg" }, // [cite: 7]
-    { id: 28, name: "A5 Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 384.00", category: "Office", imageUrl: "images/1773497151284-593770.jpg" }, // [cite: 7]
-    { id: 29, name: "A6 Petty Cash Voucher Book", pack: "24 pcs in a pack", price: "Rs. 72.00", category: "Office", imageUrl: "images/1773489340475-338737.jpg" }, // [cite: 7]
-    { id: 30, name: "File Folder", pack: "100 pcs in a pack", price: "Rs. 0.00", category: "Office", imageUrl: "images/1773497197336-878073.jpg" }, // [cite: 14]
-    { id: 31, name: "Dispatch Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 132.00", category: "Office", imageUrl: "images/1773497370792-653096.jpg" }, // [cite: 7]
-    { id: 32, name: "A4 Writing Paper Singled Ruled (=)", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Paper", imageUrl: "images/1773497400755-266566.jpg" }, // [cite: 14]
-    { id: 33, name: "A6 Carbonized Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 252.00", category: "Office", imageUrl: "images/1773497531519-266187.jpg" }, // [cite: 7]
-    { id: 34, name: "A4 Writing Paper Square Ruled (#)", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Paper", imageUrl: "images/1773497559334-950986.jpg" }, // [cite: 14]
-    { id: 35, name: "A5 Carbonized Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 432.00", category: "Office", imageUrl: "images/1773497664529-131802.jpg" }, // [cite: 7]
-    { id: 36, name: "A3 Fools Cap Paper Singled Ruled (=)", pack: "100 pcs in a pack", price: "Rs. 552.00", category: "Paper", imageUrl: "images/1773497740475-906972.jpg" }, // [cite: 14]
-    { id: 37, name: "A6 Hard Cover Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 288.00", category: "Notebooks", imageUrl: "images/1773497939923-836075.jpg" }, // [cite: 7]
-    { id: 38, name: "A3 Fools Cap Paper Square Ruled (#)", pack: "100 pcs in a pack", price: "Rs. 552.00", category: "Paper", imageUrl: "images/1773497995065-387038.jpg" }, // [cite: 14]
-    { id: 39, name: "A6 Hard Cover Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 336.00", category: "Notebooks", imageUrl: "images/1773498268395-249943.jpg" }, // [cite: 7]
-    { id: 40, name: "A4 Exam Paper", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Paper", imageUrl: "images/1773498400593-668158.jpg" }, // [cite: 14]
-    { id: 41, name: "A5 Hard Cover Note Book 160 Pages", pack: "06 pcs in a pack", price: "Rs. 552.00", category: "Notebooks", imageUrl: "images/1773516587986-346457.jpg" }, // [cite: 7]
-    { id: 42, name: "A3 Exam Paper", pack: "100 pcs in a pack", price: "Rs. 552.00", category: "Paper", imageUrl: "images/1773516614944-419034.jpg" }, // [cite: 14]
-    { id: 43, name: "Graph Paper 1mm", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Paper", imageUrl: "images/1773516695036-273073.jpg" }, // [cite: 14]
-    { id: 44, name: "World Country Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773516729961-325644.jpg" }, // [cite: 14]
-    { id: 45, name: "Graph Paper 2mm", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Paper", imageUrl: "images/1773516887790-398703.jpg" }, // [cite: 14]
-    { id: 46, name: "World Country Globel Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773516858393-380200.jpg" }, // [cite: 14]
-    { id: 47, name: "Sri Lanka Plan Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773517081078-675489.jpg" }, // [cite: 14]
-    { id: 48, name: "A4 Colouring Book Vegetable", pack: "24 pcs in a pack", price: "Rs. 168.00", category: "Drawing", imageUrl: "images/1773517114029-722664.jpg" }, // [cite: 14]
-    { id: 49, name: "Sri Lanka River Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773517141224-893871.jpg" }, // [cite: 14]
-    { id: 50, name: "A4 Colouring Book Fruits", pack: "24 pcs in a pack", price: "Rs. 168.00", category: "Drawing", imageUrl: "images/1773517223952-741738.jpg" }, // [cite: 14]
-    { id: 51, name: "Sri Lanka Province and District Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773517252928-301050.jpg" }, // [cite: 14]
-    { id: 52, name: "A4 Colouring Book Dinosaurs", pack: "24 pcs in a pack", price: "Rs. 168.00", category: "Drawing", imageUrl: "images/1773517286616-740027.jpg" }, // [cite: 14]
-    { id: 53, name: "Sri Lanka Colour Map", pack: "100 pcs in a pack", price: "Rs. 552.00", category: "Maps", imageUrl: "images/1773517384065-650805.jpg" }, // [cite: 14]
-    { id: 54, name: "A4 Colouring Book Unicorn", pack: "24 pcs in a pack", price: "Rs. 168.00", category: "Drawing", imageUrl: "images/1773517402476-588783.jpg" }, // [cite: 14]
-    { id: 55, name: "World Plan Map", pack: "100 pcs in a pack", price: "Rs. 276.00", category: "Maps", imageUrl: "images/1773517442384-326961.jpg" }, // [cite: 14]
-    { id: 56, name: "A4 White Drawing 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517481945-135899.jpg" }, // [cite: 14]
-    { id: 57, name: "A4 White Drawing 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517600813-55485.jpg" }, // [cite: 14]
-    { id: 58, name: "A4 Black Drawing 20 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517835440-809853.jpg" }, // [cite: 14]
-    { id: 59, name: "A4 Black Drawing 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517865600-360038.jpg" }, // [cite: 14]
-    { id: 60, name: "A4 Black Drawing 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520146962-890719.jpg" }, // [cite: 14]
-    { id: 61, name: "Scrap Book 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520187290-368967.jpg" }, // [cite: 14]
-    { id: 62, name: "Scrap Book 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520367659-64729.jpg" }  // [cite: 14]
+    { id: 1, name: "A7 Red Cover Note Book 80 Pages", pack: "24 pcs in a pack", price: "Rs. 576.00", category: "Notebooks", imageUrl: "images/1773521588860-297938.jpg" },
+    { id: 2, name: "A5 Red Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1764.00", category: "Notebooks", imageUrl: "images/1773469259610-524491.jpg" },
+    { id: 3, name: "A6 Red Cover Note Book 80 Pages", pack: "24 pcs in a pack", price: "Rs. 1272.00", category: "Notebooks", imageUrl: "images/1773521294860-79618.jpg" },
+    { id: 4, name: "A5 Report Pad Red Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1764.00", category: "Notebooks", imageUrl: "images/1773521536874-116238.jpg" },
+    { id: 5, name: "A6 Red Cover Note Book 120 Pages", pack: "24 pcs in a pack", price: "Rs. 1872.00", category: "Notebooks", imageUrl: "images/1773521713650-739245.jpg" },
+    { id: 6, name: "A5 Side spiral Note Book 120 Pages", pack: "12 pcs in a pack", price: "Rs. 2880.00", category: "Notebooks", imageUrl: "images/1773470768997-862968.jpg" },
+    { id: 7, name: "A6 Red Cover Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 1584.00", category: "Notebooks", imageUrl: "images/1773471113599-237719.jpg" },
+    { id: 8, name: "A5 Spiral Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 3456.00", category: "Notebooks", imageUrl: "images/1773471226752-628921.jpg" },
+    { id: 9, name: "A6 Red Cover Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 1872.00", category: "Notebooks", imageUrl: "images/1773471574799-935801.jpg" },
+    { id: 10, name: "A5 Spiral Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 4032.00", category: "Notebooks", imageUrl: "images/1773471470406-688740.jpg" },
+    { id: 11, name: "A5 Blue Cover Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1764.00", category: "Notebooks", imageUrl: "images/1773471646873-628774.jpg" },
+    { id: 12, name: "A7 Top Spiral Note Book 100 Pages", pack: "24 pcs in a pack", price: "Rs. 1296.00", category: "Notebooks", imageUrl: "images/1773471947433-520303.jpg" },
+    { id: 13, name: "A5 Report Pad Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1764.00", category: "Notebooks", imageUrl: "images/1773470981971-70398.jpg" },
+    { id: 14, name: "A6 Top Spiral Note Book 100 Pages", pack: "24 pcs in a pack", price: "Rs. 2448.00", category: "Notebooks", imageUrl: "images/1773471982910-135306.jpg" },
+    { id: 15, name: "A4 Top Spiral Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 3888.00", category: "Pads", imageUrl: "images/1773472270913-45927.jpg" },
+    { id: 16, name: "Short Hand Note Book 120 Pages", pack: "12 pcs in a pack", price: "Rs. 1728.00", category: "Pads", imageUrl: "images/1773472046195-862543.jpg" },
+    { id: 17, name: "A4 Side Spiral Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 4032.00", category: "Pads", imageUrl: "images/1773472477720-601142.jpg" },
+    { id: 18, name: "Filed Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1296.00", category: "Pads", imageUrl: "images/1773472440301-99013.jpg" },
+    { id: 19, name: "A4 Writing Pad Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 3312.00", category: "Pads", imageUrl: "images/1773472763992-342904.jpg" },
+    { id: 20, name: "Filed Note Book P.V.C Small", pack: "12 pcs in a pack", price: "Rs. 1296.00", category: "Pads", imageUrl: "images/1773472790771-776283.jpg" },
+    { id: 21, name: "A4 Campus Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 3312.00", category: "Pads", imageUrl: "images/1773472964693-524013.jpg" },
+    { id: 22, name: "Filed Note Book P.V.C Medium", pack: "06 pcs in a pack", price: "Rs. 1368.00", category: "Pads", imageUrl: "images/1773472930441-91837.jpg" },
+    { id: 23, name: "Short Hand Econmic Note Book 80 Pages", pack: "12 pcs in a pack", price: "Rs. 1080.00", category: "Pads", imageUrl: "images/1773479968130-487404.jpg" },
+    { id: 24, name: "Filed Note Book P.V.C Large", pack: "12 pcs in a pack", price: "Rs. 4032.00", category: "Pads", imageUrl: "images/1773473197847-155423.jpg" },
+    { id: 25, name: "Short Hand Econmic Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Pads", imageUrl: "images/1773480453250-329931.jpg" },
+    { id: 26, name: "A6 Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 2736.00", category: "Office", imageUrl: "images/1773479927149-260956.jpg" },
+    { id: 27, name: "Short Hand Note Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1440.00", category: "Pads", imageUrl: "images/1773480194794-40248.jpg" },
+    { id: 28, name: "A5 Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 4608.00", category: "Office", imageUrl: "images/1773497151284-593770.jpg" },
+    { id: 29, name: "A6 Petty Cash Voucher Book", pack: "24 pcs in a pack", price: "Rs. 1728.00", category: "Office", imageUrl: "images/1773489340475-338737.jpg" },
+    { id: 30, name: "File Folder", pack: "100 pcs in a pack", price: "Rs. 0.00", category: "Office", imageUrl: "images/1773497197336-878073.jpg" },
+    { id: 31, name: "Dispatch Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 1584.00", category: "Office", imageUrl: "images/1773497370792-653096.jpg" },
+    { id: 32, name: "A4 Writing Paper Singled Ruled (=)", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Paper", imageUrl: "images/1773497400755-266566.jpg" },
+    { id: 33, name: "A6 Carbonized Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 3024.00", category: "Office", imageUrl: "images/1773497531519-266187.jpg" },
+    { id: 34, name: "A4 Writing Paper Square Ruled (#)", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Paper", imageUrl: "images/1773497559334-950986.jpg" },
+    { id: 35, name: "A5 Carbonized Cash Bill Book 100 Pages", pack: "12 pcs in a pack", price: "Rs. 5184.00", category: "Office", imageUrl: "images/1773497664529-131802.jpg" },
+    { id: 36, name: "A3 Fools Cap Paper Singled Ruled (=)", pack: "100 pcs in a pack", price: "Rs. 55200.00", category: "Paper", imageUrl: "images/1773497740475-906972.jpg" },
+    { id: 37, name: "A6 Hard Cover Note Book 160 Pages", pack: "12 pcs in a pack", price: "Rs. 3456.00", category: "Notebooks", imageUrl: "images/1773497939923-836075.jpg" },
+    { id: 38, name: "A3 Fools Cap Paper Square Ruled (#)", pack: "100 pcs in a pack", price: "Rs. 55200.00", category: "Paper", imageUrl: "images/1773497995065-387038.jpg" },
+    { id: 39, name: "A6 Hard Cover Note Book 200 Pages", pack: "12 pcs in a pack", price: "Rs. 4032.00", category: "Notebooks", imageUrl: "images/1773498268395-249943.jpg" },
+    { id: 40, name: "A4 Exam Paper", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Paper", imageUrl: "images/1773498400593-668158.jpg" },
+    { id: 41, name: "A5 Hard Cover Note Book 160 Pages", pack: "06 pcs in a pack", price: "Rs. 3312.00", category: "Notebooks", imageUrl: "images/1773516587986-346457.jpg" },
+    { id: 42, name: "A3 Exam Paper", pack: "100 pcs in a pack", price: "Rs. 55200.00", category: "Paper", imageUrl: "images/1773516614944-419034.jpg" },
+    { id: 43, name: "Graph Paper 1mm", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Paper", imageUrl: "images/1773516695036-273073.jpg" },
+    { id: 44, name: "World Country Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773516729961-325644.jpg" },
+    { id: 45, name: "Graph Paper 2mm", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Paper", imageUrl: "images/1773516887790-398703.jpg" },
+    { id: 46, name: "World Country Globel Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773516858393-380200.jpg" },
+    { id: 47, name: "Sri Lanka Plan Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773517081078-675489.jpg" },
+    { id: 48, name: "A4 Colouring Book Vegetable", pack: "24 pcs in a pack", price: "Rs. 4032.00", category: "Drawing", imageUrl: "images/1773517114029-722664.jpg" },
+    { id: 49, name: "Sri Lanka River Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773517141224-893871.jpg" },
+    { id: 50, name: "A4 Colouring Book Fruits", pack: "24 pcs in a pack", price: "Rs. 4032.00", category: "Drawing", imageUrl: "images/1773517223952-741738.jpg" },
+    { id: 51, name: "Sri Lanka Province and District Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773517252928-301050.jpg" },
+    { id: 52, name: "A4 Colouring Book Dinosaurs", pack: "24 pcs in a pack", price: "Rs. 4032.00", category: "Drawing", imageUrl: "images/1773517286616-740027.jpg" },
+    { id: 53, name: "Sri Lanka Colour Map", pack: "100 pcs in a pack", price: "Rs. 55200.00", category: "Maps", imageUrl: "images/1773517384065-650805.jpg" },
+    { id: 54, name: "A4 Colouring Book Unicorn", pack: "24 pcs in a pack", price: "Rs. 4032.00", category: "Drawing", imageUrl: "images/1773517402476-588783.jpg" },
+    { id: 55, name: "World Plan Map", pack: "100 pcs in a pack", price: "Rs. 27600.00", category: "Maps", imageUrl: "images/1773517442384-326961.jpg" },
+    { id: 56, name: "A4 White Drawing 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517481945-135899.jpg" },
+    { id: 57, name: "A4 White Drawing 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517600813-55485.jpg" },
+    { id: 58, name: "A4 Black Drawing 20 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517835440-809853.jpg" },
+    { id: 59, name: "A4 Black Drawing 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773517865600-360038.jpg" },
+    { id: 60, name: "A4 Black Drawing 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520146962-890719.jpg" },
+    { id: 61, name: "Scrap Book 40 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520187290-368967.jpg" },
+    { id: 62, name: "Scrap Book 80 Pages", pack: "12 pcs in a pack", price: "Rs. 0.00", category: "Drawing", imageUrl: "images/1773520367659-64729.jpg" }
 ];
