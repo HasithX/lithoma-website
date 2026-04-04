@@ -54,12 +54,12 @@ export default function Shop() {
                 : [...prev, { ...product, quantity: 1 }]
         })
 
-        // Add Toast
+        // Add Toast (Override array to prevent spamming)
         const toastId = Date.now()
-        setToasts(prev => [...prev, { id: toastId, msg: `Added ${product.name} to cart!` }])
+        setToasts([{ id: toastId, msg: `Added ${product.name} to cart!` }])
         setTimeout(() => {
             setToasts(prev => prev.filter(t => t.id !== toastId))
-        }, 3000)
+        }, 2000)
     }, [])
 
     const updateQty = (id, delta) => {
