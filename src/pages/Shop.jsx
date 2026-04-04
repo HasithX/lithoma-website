@@ -14,6 +14,8 @@ export default function Shop() {
     const [displayLimit, setDisplayLimit] = useState(9)
     const [toasts, setToasts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [isFormOpen, setIsFormOpen] = useState(false)
+    const [customerDetails, setCustomerDetails] = useState({ name: '', phone: '', email: '' })
 
     useEffect(() => {
         fetch('/api/products')
@@ -69,10 +71,16 @@ export default function Shop() {
 
     const clearCart = () => setCart([])
 
-    const handleRequestQuotation = () => {
+    const handleRequestQuotation = (e) => {
+        e.preventDefault()
         if (cart.length === 0) { alert('Your cart is empty!'); return }
 
         let text = 'Hello Litho Marketing Services!\n\nI would like to request details/quotation for the following items:\n\n'
+        text += `--- Customer Details ---\n`
+        text += `Name: ${customerDetails.name}\n`
+        text += `Phone: ${customerDetails.phone}\n`
+        if (customerDetails.email) text += `Email: ${customerDetails.email}\n`
+        text += `------------------------\n\n`
         cart.forEach((item, i) => {
             text += `${i + 1}. ${item.name} - Qty: ${item.quantity} (${item.pack})\n`
         })
@@ -81,6 +89,7 @@ export default function Shop() {
         const mailtoURL = `mailto:info@lithomatelk.com?subject=${encodeURIComponent("Request Details / Quotation - LithoMATE")}&body=${encodeURIComponent(text)}`
         window.location.href = mailtoURL;
 
+        setIsFormOpen(false)
         setToasts(prev => [...prev, { id: Date.now(), msg: 'Opening your email client...' }])
     }
 
@@ -154,9 +163,41 @@ export default function Shop() {
                     <button className="btn btn-clear-cart w-full" onClick={clearCart} style={{ marginBottom: 16 }}>
                         <i className="ph ph-trash" /> Clear Cart
                     </button>
-                    <button className="btn btn-primary w-full" onClick={handleRequestQuotation}>
+                    <button className="btn btn-primary w-full" onClick={() => {
+                        if (cart.length === 0) { alert('Your cart is empty!'); return; }
+                        setIsFormOpen(true)
+                    }}>
                         Request Details / Quotation
                     </button>
+                </div>
+            </div>
+
+            {/* ── Customer Info Modal ── */}
+            <div className={`modal-overlay${isFormOpen ? ' active' : ''}`} onClick={() => setIsFormOpen(false)}>
+                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <h2 style={{ fontSize: '1.6rem', color: 'var(--color-primary)', fontWeight: 800 }}>Your Details</h2>
+                        <button className="close-cart" onClick={() => setIsFormOpen(false)}><i className="ph ph-x" /></button>
+                    </div>
+
+                    <form onSubmit={handleRequestQuotation}>
+                        <div className="form-group">
+                            <label>Full Name *</label>
+                            <input required className="form-input" type="text" placeholder="John Doe" value={customerDetails.name} onChange={e => setCustomerDetails({ ...customerDetails, name: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone Number *</label>
+                            <input required className="form-input" type="tel" placeholder="07XXXXXXXX" value={customerDetails.phone} onChange={e => setCustomerDetails({ ...customerDetails, phone: e.target.value })} />
+                        </div>
+                        <div className="form-group">
+                            <label>Email Address</label>
+                            <input className="form-input" type="email" placeholder="john@example.com (Optional)" value={customerDetails.email} onChange={e => setCustomerDetails({ ...customerDetails, email: e.target.value })} />
+                        </div>
+
+                        <button type="submit" className="btn btn-primary w-full" style={{ fontSize: '1.1rem', padding: '16px', marginTop: 16 }}>
+                            Continue to Email Draft
+                        </button>
+                    </form>
                 </div>
             </div>
 
